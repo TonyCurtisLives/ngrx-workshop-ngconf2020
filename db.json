@@ -17,6 +17,18 @@
       "name": "The Hobbit",
       "earnings": "100000000",
       "description": null
+    },
+    {
+      "id": "dbaad7a7-3787-4557-bd2c-8edfbfd00d12",
+      "name": "Example",
+      "earnings": "42000000",
+      "description": "yada"
+    },
+    {
+      "id": "dbdaaaaf-7714-4403-8717-768911d353eb",
+      "name": "LOTR",
+      "earnings": "100000000000",
+      "description": null
     }
   ]
 }
