@@ -1,6 +1,7 @@
 import { createReducer, on, Action, createSelector } from "@ngrx/store";
 import { BookModel, calculateBooksGrossEarnings } from "src/app/shared/models";
 import { BooksPageActions, BooksApiActions } from "src/app/books/actions";
+import { bookDeleted } from 'src/app/books/actions/books-api.actions';
 
 const createBook = (books: BookModel[], book: BookModel) => [...books, book];
 const updateBook = (books: BookModel[], changes: BookModel) =>
@@ -33,10 +34,44 @@ export const booksReducer = createReducer(
       ...state,
       activeBookId: action.bookId
     };
+  }), // start ch 5
+  on(BooksApiActions.booksLoaded, (state, action) => {
+    return {
+      ...state,
+      collection: action.books
+    };
+  }),
+  on(BooksApiActions.bookCreated, (state, action) => {
+    return {
+      collection: createBook(state.collection, action.book),
+      activeBookId: null
+    };
+  }),
+  on(BooksApiActions.bookUpdated, (state, action) => {
+    return {
+      collection: updateBook(state.collection, action.book),
+      activeBookId: null
+    };
+  }),
+  on(BooksApiActions.bookDeleted, (state, action) => {
+    return {
+      ...state,
+      collection: deleteBook(state.collection, action.bookId)
+    }; // end ch 5
   })
-);
-// ch 4.1
+); // ch 4.1
 export function reducer(state: State | undefined, action: Action) {
     return booksReducer(state, action);
 }
-  
+// ch 6.1 Getter Selectors (returns property from state) can also be used as input to more complex selectors
+export const selectAll = (state: State) => state.collection;
+export const selectActiveBookId = (state: State) => state.activeBookId;
+export const selectActiveBook = createSelector( // ch 6.2 complex selector transforms, uses projector function to create or compute a new value
+    selectAll,
+    selectActiveBookId,
+    (books, selectActiveBookId) => books.find(book => book.id === selectActiveBookId) || null
+);
+export const selectEarningsTotals = createSelector( // ch6.3 complex selector one prop
+    selectAll,
+    calculateBooksGrossEarnings
+);

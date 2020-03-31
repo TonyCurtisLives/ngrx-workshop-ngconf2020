@@ -15,7 +15,7 @@ export const selectBook = createAction(
     export const createBook = createAction(
         "[Books Page] Create Book",
         props<{ book: BookRequiredProps }>()
-    )
+    );
 
     export const updateBook = createAction(
         "[Books Page] Update Book",
